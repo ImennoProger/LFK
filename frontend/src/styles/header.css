@@ -1,0 +1,41 @@
+/* Стили для хедера */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #0066cc; /* Цвет фона шапки */
+    color: white;
+  }
+  
+  header .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  header .logo img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  header nav {
+    display: flex;
+    gap: 20px;
+  }
+  
+  header nav a {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  header nav a:hover {
+    color: #00d7ff; /* Цвет при наведении */
+  }
+  
+  header .buttons {
+    display: flex;
+    gap: 20px;
+  }
+  
