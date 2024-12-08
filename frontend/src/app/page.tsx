@@ -6,6 +6,7 @@ import '../styles/header.css';    // Для стилей хедера
 import '../styles/global.css';     // Добавьте этот импорт для глобальных стилей
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Head from 'next/head';
 
 type Polygon = { points: string; fill: string; stroke: string; onClick?: () => void };
 
@@ -349,434 +350,490 @@ export default function Page() {
   };
 
   return (
-    <div style={{ backgroundColor: '#F9FAFB', minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: 0, fontFamily: "'Nunito', sans-serif", fontWeight: 300 }}>
-      {/* Header */}
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: '#FFFFFF', color: '#10415F', marginBottom: 0, fontFamily: "'Nunito', sans-serif", textAlign: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'center' }}>
-          <span style={{ fontSize: '1.5rem', fontWeight: 800, textRendering: 'optimizeLegibility', textAlign: 'center', marginTop: '-8px' }}>ЛФК центр</span>
-        </div>
-        <nav style={{ display: 'flex', gap: '30px', textAlign: 'center' }}>
-          {['Витамины', 'Консультация', 'Физические упражнения', 'Питание'].map((category) => (
-            <Link key={category} href={`/${category.toLowerCase()}`} style={{ color: '#10415F', textDecoration: 'none', fontWeight: 700, textRendering: 'optimizeLegibility', textAlign: 'center' }}>
-              {category}
+    <>
+      <Head>
+        <title>ЛФК Центр</title>
+      </Head>
+      <div style={{ backgroundColor: '#F9FAFB', minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: 0, fontFamily: "'Nunito', sans-serif", fontWeight: 300 }}>
+        {/* Header */}
+        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: '#FFFFFF', color: '#10415F', marginBottom: 0, fontFamily: "'Nunito', sans-serif", textAlign: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'center' }}>
+            <span style={{ fontSize: '1.5rem', fontWeight: 800, textRendering: 'optimizeLegibility', textAlign: 'center', marginTop: '-8px' }}>ЛФК центр</span>
+          </div>
+          <nav style={{ display: 'flex', gap: '30px', textAlign: 'center' }}>
+            {['Витамины', 'Консультация', 'Физические упражнения', 'Питание'].map((category) => (
+              <Link key={category} href={`/${category.toLowerCase()}`} style={{ color: '#10415F', textDecoration: 'none', fontWeight: 700, textRendering: 'optimizeLegibility', textAlign: 'center' }}>
+                {category}
+              </Link>
+            ))}
+          </nav>
+          <div style={{ display: 'flex', gap: '16px', textAlign: 'center' }}>
+            <Link href="/help" style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#10415F', fontWeight: 800, backgroundColor: 'transparent', border: 'none', textAlign: 'center', textDecoration: 'none' }}>
+              <HelpCircle size={20} />
+              <span style={{ textRendering: 'optimizeLegibility', textAlign: 'center', fontSize: '0.875rem' }}>Помощь</span>
             </Link>
-          ))}
-        </nav>
-        <div style={{ display: 'flex', gap: '16px', textAlign: 'center' }}>
-          <Link href="/help" style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#10415F', fontWeight: 800, backgroundColor: 'transparent', border: 'none', textAlign: 'center', textDecoration: 'none' }}>
-            <HelpCircle size={20} />
-            <span style={{ textRendering: 'optimizeLegibility', textAlign: 'center', fontSize: '0.875rem' }}>Помощь</span>
-          </Link>
-          {user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              {Number(user.id) === 1 && (
+            {user ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                {Number(user.id) === 1 && (
+                  <Link 
+                    href="/admin"
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '4px', 
+                      color: 'white', 
+                      fontWeight: 800, 
+                      backgroundColor: '#FF6B6B',
+                      border: 'none', 
+                      borderRadius: '20px', 
+                      padding: '7px 18px', 
+                      fontSize: '1.25rem', 
+                      textDecoration: 'none',
+                      cursor: 'pointer',
+                      zIndex: 1000
+                    }}
+                  >
+                    Админ-панель
+                  </Link>
+                )}
                 <Link 
-                  href="/admin"
+                  href="/user-courses"
                   style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
                     gap: '4px', 
                     color: 'white', 
                     fontWeight: 800, 
-                    backgroundColor: '#FF6B6B',
+                    backgroundColor: '#4CAF50',
                     border: 'none', 
                     borderRadius: '20px', 
                     padding: '7px 18px', 
                     fontSize: '1.25rem', 
                     textDecoration: 'none',
-                    cursor: 'pointer',
-                    zIndex: 1000
+                    cursor: 'pointer'
                   }}
                 >
-                  Админ-панель
+                  Мои курсы
                 </Link>
-              )}
-              <Link 
-                href="/user-courses"
+                <span style={{ color: '#10415F', fontWeight: 700 }}>
+                  Добро пожаловать, {user.first_name}!
+                </span>
+                <button 
+                  onClick={handleLogout} 
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '4px', 
+                    color: 'white', 
+                    fontWeight: 800, 
+                    backgroundColor: '#42CDEA', 
+                    border: 'none', 
+                    borderRadius: '20px', 
+                    padding: '7px 18px', 
+                    fontSize: '1.25rem', 
+                    cursor: 'pointer' 
+                  }}
+                >
+                  Выйти
+                </button>
+              </div>
+            ) : (
+              <button onClick={openLoginModal} style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'white', fontWeight: 800, backgroundColor: '#42CDEA', border: 'none', borderRadius: '20px', padding: '7px 18px', fontSize: '1.25rem', textAlign: 'center', cursor: 'pointer' }}>
+                Регистрация | Вход
+              </button>
+            )}
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main style={{ flexGrow: 1, padding: 0 }}>
+          {/* Search Section */}
+          <section style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '32px', textAlign: 'center', backgroundImage: "url('/backgroundmain.png')", backgroundSize: 'cover', minHeight: '70vh', padding: '32px' }}>
+            <div>
+              <h1 style={{ fontWeight: 700, fontSize: '3.75rem', color: 'white', textRendering: 'optimizeLegibility', textShadow: '0 0 2px rgba(0, 0, 0, 0.5)', marginBottom: '0' }}>
+                Начните с выбора проблемы, и мы покажем
+                <span style={{ display: 'block', textAlign: 'center', color: 'white' }}>путь к здоровью.</span>
+              </h1>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '900px', position: 'relative', marginTop: '0' }}>
+              <input
+                type="text"
+                placeholder="Поиск по сайту"
+                style={{ padding: '22px', color: '#4B5563', borderRadius: '9999px', width: '100%', border: '1px solid #D1D5DB' }}
+              />
+              <button style={{ backgroundColor: '#00D7FF', padding: '22px', color: 'white', borderRadius: '9999px', position: 'absolute', right: '0', cursor: 'pointer' }}>
+                Найти
+              </button>
+            </div>
+            <p style={{ textAlign: 'center', fontSize: '1.875rem', color: 'white', marginTop: '0', marginBottom: '0', fontFamily: "'Nunito', sans-serif", fontWeight: 300 }}>
+              Персональные советы для вашего здоровья и комфорта
+            </p>
+          </section>
+          {/* Category Buttons */}
+          <section style={{ display: 'flex', justifyContent: 'center', gap: '24px', margin: '32px 0' }}>
+            <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent', padding: '36px 72px', color: '#4B5563', borderRadius: '9999px', border: '1px solid #D1D5DB', boxShadow: 'none', transition: 'background-color 0.2s', cursor: 'pointer', fontSize: '1.25rem', width: '290px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <img src="/vitamins.png" alt="Витамины" style={{ marginRight: '8px', width: '32px', height: '32px' }} />
+              Витамины
+            </button>
+            <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent', padding: '36px 72px', color: '#4B5563', borderRadius: '9999px', border: '1px solid #D1D5DB', boxShadow: 'none', transition: 'background-color 0.2s', cursor: 'pointer', fontSize: '1.25rem', width: '290px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <img src="/consulting.png" alt="Консультация" style={{ marginRight: '8px', width: '32px', height: '32px' }} />
+              Консультация
+            </button>
+            <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent', padding: '36px 72px', color: '#4B5563', borderRadius: '9999px', border: '1px solid #D1D5DB', boxShadow: 'none', transition: 'background-color 0.2s', cursor: 'pointer', fontSize: '1.25rem', width: '290px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <img src="/exercise.png" alt="Физическе упражнения" style={{ marginRight: '8px', width: '32px', height: '32px' }} />
+              Физические упражнения
+            </button>
+            <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent', padding: '36px 72px', color: '#4B5563', borderRadius: '9999px', border: '1px solid #D1D5DB', boxShadow: 'none', transition: 'background-color 0.2s', cursor: 'pointer', fontSize: '1.25rem', width: '290px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <img src="/products.png" alt="Питание" style={{ marginRight: '8px', width: '32px', height: '32px' }} />
+              Питание
+            </button>
+          </section>
+
+          {/* Body Selection */}
+          <section style={{ display: 'flex', justifyContent: 'center', gap: '64px' }}>
+            <div>
+              <h2 style={{ fontWeight: 'bold', marginBottom: '8px', textAlign: 'center' }}>Выберите часть тела</h2>
+              <div style={{ gap: '16px' }}>
+                <div style={{ position: 'relative' }}>
+                  <img src="https://habrastorage.org/webt/pd/3k/dr/pd3kdr4onegu2c2-tewswou9vai.png" alt="Тело" style={{ width: '700px', height: 'auto' }} />
+                  <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+                    {polygons.length > 0 ? (
+                      polygons.map((polygon, index) => (
+                        <polygon 
+                          key={index}
+                          points={polygon.points} 
+                          fill={polygon.fill} 
+                          stroke={polygon.stroke} 
+                          onMouseEnter={(e) => {
+                            e.currentTarget.setAttribute('fill', 'red');
+                            const text = textMapping[index];
+                            if (text) {
+                              setHoveredText(text);
+                            }
+                          }} 
+                          onMouseLeave={(e) => {
+                            e.currentTarget.setAttribute('fill', 'black');
+                            setHoveredText(null);
+                          }} 
+                          onClick={() => handlePolygonClick(textMapping[index], index)}
+                        />
+                      ))
+                    ) : (
+                      <text x="50%" y="50%" textAnchor="middle" fill="black">Нет полигонов для отображения</text>
+                    )}
+                    {hoveredText && (
+                      <text x="50%" y="20%" textAnchor="middle" fill="black">{hoveredText}</text>
+                    )}
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Модальное окно для выбора симптомов */}
+          {isModalOpen && (
+            <div style={{ position: 'fixed', top: '45%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 0 10px rgba(0,0,0,0.5)', width: '220px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ margin: '0' }}>{selectedBodyPart}</h3>
+                <button onClick={closeModal} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.5rem', color: '#aaa' }}>✖</button> {/* Кнопка закрытия */}
+              </div>
+              {selectedBodyPart && getSymptomsForBodyPart(selectedBodyPart).map(symptom => (
+                <div key={symptom}>
+                  <label>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedSymptoms.includes(symptom)} 
+                      onChange={() => toggleSymptom(symptom)} 
+                    />
+                    {symptom}
+                  </label>
+                </div>
+              ))}
+              <button 
+                onClick={handleConfirm} 
                 style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '4px', 
+                  marginTop: '10px', 
+                  backgroundColor: '#42CDEA', 
                   color: 'white', 
-                  fontWeight: 800, 
-                  backgroundColor: '#4CAF50',
                   border: 'none', 
-                  borderRadius: '20px', 
-                  padding: '7px 18px', 
-                  fontSize: '1.25rem', 
-                  textDecoration: 'none',
+                  borderRadius: '5px', 
+                  padding: '10px',
                   cursor: 'pointer'
                 }}
               >
-                Мои курсы
-              </Link>
-              <span style={{ color: '#10415F', fontWeight: 700 }}>
-                Добро пожаловать, {user.first_name}!
-              </span>
-              <button 
-                onClick={handleLogout} 
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '4px', 
-                  color: 'white', 
-                  fontWeight: 800, 
-                  backgroundColor: '#42CDEA', 
-                  border: 'none', 
-                  borderRadius: '20px', 
-                  padding: '7px 18px', 
-                  fontSize: '1.25rem', 
-                  cursor: 'pointer' 
-                }}
-              >
-                Выйти
+                Подтвердить
               </button>
             </div>
-          ) : (
-            <button onClick={openLoginModal} style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'white', fontWeight: 800, backgroundColor: '#42CDEA', border: 'none', borderRadius: '20px', padding: '7px 18px', fontSize: '1.25rem', textAlign: 'center', cursor: 'pointer' }}>
-              Регистрация | Вход
-            </button>
           )}
-        </div>
-      </header>
 
-      {/* Main Content */}
-      <main style={{ flexGrow: 1, padding: 0 }}>
-        {/* Search Section */}
-        <section style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '32px', textAlign: 'center', backgroundImage: "url('/backgroundmain.png')", backgroundSize: 'cover', minHeight: '70vh', padding: '32px' }}>
-          <div>
-            <h1 style={{ fontWeight: 700, fontSize: '3.75rem', color: 'white', textRendering: 'optimizeLegibility', textShadow: '0 0 2px rgba(0, 0, 0, 0.5)', marginBottom: '0' }}>
-              Начните с выбора проблемы, и мы покажем
-              <span style={{ display: 'block', textAlign: 'center', color: 'white' }}>путь к здоровью.</span>
-            </h1>
-          </div>
-          
-          <div style={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '900px', position: 'relative', marginTop: '0' }}>
-            <input
-              type="text"
-              placeholder="Поиск по сайту"
-              style={{ padding: '22px', color: '#4B5563', borderRadius: '9999px', width: '100%', border: '1px solid #D1D5DB' }}
-            />
-            <button style={{ backgroundColor: '#00D7FF', padding: '22px', color: 'white', borderRadius: '9999px', position: 'absolute', right: '0', cursor: 'pointer' }}>
-              Найти
-            </button>
-          </div>
-          <p style={{ textAlign: 'center', fontSize: '1.875rem', color: 'white', marginTop: '0', marginBottom: '0', fontFamily: "'Nunito', sans-serif", fontWeight: 300 }}>
-            Персональные советы для вашего здоровья и комфорта
-          </p>
-        </section>
-        {/* Category Buttons */}
-        <section style={{ display: 'flex', justifyContent: 'center', gap: '24px', margin: '32px 0' }}>
-          <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent', padding: '36px 72px', color: '#4B5563', borderRadius: '9999px', border: '1px solid #D1D5DB', boxShadow: 'none', transition: 'background-color 0.2s', cursor: 'pointer', fontSize: '1.25rem', width: '290px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            <img src="/vitamins.png" alt="Витамины" style={{ marginRight: '8px', width: '32px', height: '32px' }} />
-            Витамины
-          </button>
-          <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent', padding: '36px 72px', color: '#4B5563', borderRadius: '9999px', border: '1px solid #D1D5DB', boxShadow: 'none', transition: 'background-color 0.2s', cursor: 'pointer', fontSize: '1.25rem', width: '290px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            <img src="/consulting.png" alt="Консультация" style={{ marginRight: '8px', width: '32px', height: '32px' }} />
-            Консультация
-          </button>
-          <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent', padding: '36px 72px', color: '#4B5563', borderRadius: '9999px', border: '1px solid #D1D5DB', boxShadow: 'none', transition: 'background-color 0.2s', cursor: 'pointer', fontSize: '1.25rem', width: '290px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            <img src="/exercise.png" alt="Физическе упражнения" style={{ marginRight: '8px', width: '32px', height: '32px' }} />
-            Физические упражнения
-          </button>
-          <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent', padding: '36px 72px', color: '#4B5563', borderRadius: '9999px', border: '1px solid #D1D5DB', boxShadow: 'none', transition: 'background-color 0.2s', cursor: 'pointer', fontSize: '1.25rem', width: '290px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            <img src="/products.png" alt="Питание" style={{ marginRight: '8px', width: '32px', height: '32px' }} />
-            Питание
-          </button>
-        </section>
-
-        {/* Body Selection */}
-        <section style={{ display: 'flex', justifyContent: 'center', gap: '64px' }}>
-          <div>
-            <h2 style={{ fontWeight: 'bold', marginBottom: '8px', textAlign: 'center' }}>Выберите часть тела</h2>
-            <div style={{ gap: '16px' }}>
-              <div style={{ position: 'relative' }}>
-                <img src="https://habrastorage.org/webt/pd/3k/dr/pd3kdr4onegu2c2-tewswou9vai.png" alt="Тело" style={{ width: '700px', height: 'auto' }} />
-                <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-                  {polygons.length > 0 ? (
-                    polygons.map((polygon, index) => (
-                      <polygon 
-                        key={index}
-                        points={polygon.points} 
-                        fill={polygon.fill} 
-                        stroke={polygon.stroke} 
-                        onMouseEnter={(e) => {
-                          e.currentTarget.setAttribute('fill', 'red');
-                          const text = textMapping[index];
-                          if (text) {
-                            setHoveredText(text);
-                          }
-                        }} 
-                        onMouseLeave={(e) => {
-                          e.currentTarget.setAttribute('fill', 'black');
-                          setHoveredText(null);
-                        }} 
-                        onClick={() => handlePolygonClick(textMapping[index], index)}
-                      />
-                    ))
-                  ) : (
-                    <text x="50%" y="50%" textAnchor="middle" fill="black">Нет полигонов для отображения</text>
-                  )}
-                  {hoveredText && (
-                    <text x="50%" y="20%" textAnchor="middle" fill="black">{hoveredText}</text>
-                  )}
-                </svg>
+          {/* Recommendations */}
+          <section id="recommendations" style={{ margin: '32px 0', padding: '20px', backgroundColor: '#F0F4F8', borderRadius: '8px' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center', marginBottom: '16px', color: '#1E3A8A' }}>
+              Рекомендуемые упражнения, питание и витамины
+              {exercises.length > 0 && (
+                <div style={{ 
+                  marginTop: '10px',
+                  padding: '15px',
+                  backgroundColor: '#E3F2FD',
+                  borderRadius: '8px',
+                  fontSize: '1rem'
+                }}>
+                  Хотите посмотреть этот курс у себя в профиле? 
+                  <Link 
+                    href="/user-courses" 
+                    style={{ 
+                      marginLeft: '10px',
+                      color: 'white',
+                      backgroundColor: '#4CAF50',
+                      padding: '8px 16px',
+                      borderRadius: '20px',
+                      textDecoration: 'none',
+                      display: 'inline-block'
+                    }}
+                  >
+                    Перейти в мои курсы
+                  </Link>
+                </div>
+              )}
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
+              {/* Упражнения */}
+              <div style={{ padding: '10px', border: '1px solid #D1D5DB', borderRadius: '8px', backgroundColor: 'white' }}>
+                  <h3 style={{ fontWeight: 'semibold', color: '#1E3A8A', textAlign: 'center' }}>Упражнения</h3>
+                  <ul>
+                      {exercises.length > 0 ? (
+                          exercises.map((exercise, index) => (
+                              <li key={index} style={{ textAlign: 'center', marginBottom: '20px' }}>
+                                  {exerciseGifs[exercise] && (
+                                      <img 
+                                          src={exerciseGifs[exercise]} 
+                                          alt={exercise} 
+                                          style={{ width: '150px', height: 'auto', display: 'block', margin: '0 auto 10px' }} 
+                                      />
+                                  )}
+                                  <span>{exercise}</span>
+                              </li>
+                          ))
+                      ) : (
+                          <li>Нет рекомендаций</li>
+                      )}
+                  </ul>
+              </div>
+              {/* Рекомендуемое питание и витамины */}
+              <div style={{ padding: '10px', border: '1px solid #D1D5DB', borderRadius: '8px', backgroundColor: 'white' }}>
+                  <h3 style={{ fontWeight: 'semibold', color: '#1E3A8A', textAlign: 'center' }}>Питание и витамины</h3>
+                  <ul>
+                      {nutrition.length > 0 ? (
+                          nutrition.map((item, index) => (
+                              <li key={index}>
+                                  {item.name} {item.description}
+                              </li>
+                          ))
+                      ) : (
+                          <li>Нет рекомендаций по питанию</li>
+                      )}
+                  </ul>
+              </div>
+              {/* Продолжительность курса */}
+              <div style={{ padding: '10px', border: '1px solid #D1D5DB', borderRadius: '8px', backgroundColor: 'white' }}>
+                  <h3 style={{ fontWeight: 'semibold', color: '#1E3A8A', textAlign: 'center' }}>Рекомендуемая продолжительность курса</h3>
+                  <p style={{ fontSize: '2.5em', textAlign: 'center' }}>{duration}</p>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </main>
 
-        {/* Модальное окно для выбора симптомов */}
-        {isModalOpen && (
-          <div style={{ position: 'fixed', top: '45%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 0 10px rgba(0,0,0,0.5)', width: '220px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ margin: '0' }}>{selectedBodyPart}</h3>
-              <button onClick={closeModal} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.5rem', color: '#aaa' }}>✖</button> {/* Кнопка закрытия */}
-            </div>
-            {selectedBodyPart && getSymptomsForBodyPart(selectedBodyPart).map(symptom => (
-              <div key={symptom}>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={selectedSymptoms.includes(symptom)} 
-                    onChange={() => toggleSymptom(symptom)} 
-                  />
-                  {symptom}
-                </label>
-              </div>
-            ))}
-            <button 
-              onClick={handleConfirm} 
+        {/* Footer */}
+        <footer style={{ backgroundColor: '#10415F', color: 'white', padding: '20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ flex: 1, textAlign: 'left', paddingLeft: '20px' }}>
+            <h2>ЛФК Центр</h2>
+            <p>+1 (7635) 547-12-97</p>
+            <p>support@LFK.Center</p>
+          </div>
+          <div style={{ flex: 1, textAlign: 'center' }}>
+            <nav style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+              <Link href="/vitamins" style={{ color: 'white', textDecoration: 'none' }}>Витамины</Link>
+              <Link href="/consulting" style={{ color: 'white', textDecoration: 'none' }}>Консультации</Link>
+              <Link href="/exercises" style={{ color: 'white', textDecoration: 'none' }}>Физические упражнения</Link>
+              <Link href="/nutrition" style={{ color: 'white', textDecoration: 'none' }}>Питание</Link>
+            </nav>
+          </div>
+          <div style={{ flex: 1, textAlign: 'center', paddingRight: '20px', marginTop: '-20px' }}>
+            <h3>Подписаться на рассылку</h3>
+            <input 
+              type="email" 
+              placeholder="Получать обновления по почте" 
               style={{ 
-                marginTop: '10px', 
-                backgroundColor: '#42CDEA', 
-                color: 'white', 
-                border: 'none', 
+                padding: '12px',
                 borderRadius: '5px', 
-                padding: '10px',
-                cursor: 'pointer'
-              }}
-            >
-              Подтвердить
-            </button>
+                border: 'none',
+                width: '300px',
+                marginRight: '10px'
+              }} 
+            />
+            <button style={{ backgroundColor: '#42CDEA', color: 'white', border: 'none', borderRadius: '5px', padding: '12px 20px' }}>→</button>
+          </div>
+        </footer>
+
+        {/* Модальное окно для входа */}
+        {isLoginModalOpen && (
+          <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', borderRadius: '15px', boxShadow: '0 0 10px rgba(0,0,0,0.5)', width: '350px' }}>
+            <h2 style={{ textAlign: 'center', marginBottom: '20px', marginTop: '0px', fontSize: '2rem' }}>Вход</h2>
+            <form onSubmit={handleLogin}>
+              <div>
+                <input 
+                  type="text" 
+                  name="email"
+                  placeholder="Телефон | Почта" 
+                  style={{ 
+                    width: '93%', 
+                    padding: '10px', 
+                    marginBottom: '15px', 
+                    borderWidth: '0 0 2px 0',
+                    borderColor: '#D1D5DB',
+                    borderStyle: 'solid',
+                    outline: 'none',
+                    fontSize: '14px'
+                  }} 
+                />
+                <input 
+                  type="password" 
+                  name="password"
+                  placeholder="Пароль" 
+                  style={{ 
+                    width: '93%', 
+                    padding: '10px', 
+                    marginBottom: '15px', 
+                    borderWidth: '0 0 2px 0',
+                    borderColor: '#D1D5DB',
+                    borderStyle: 'solid',
+                    outline: 'none',
+                    fontSize: '14px'
+                  }} 
+                />
+                <p style={{ textAlign: 'right', marginBottom: '15px', fontSize: '12px' }}>
+                  <a href="#" style={{ color: '#42CDEA' }}>Забыли пароль?</a>
+                </p>
+                <button 
+                  type="submit" 
+                  style={{ 
+                    width: '100%', 
+                    padding: '10px', 
+                    backgroundColor: '#42CDEA', 
+                    color: 'white', 
+                    border: 'none', 
+                    borderRadius: '10px', 
+                    fontSize: '23px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Войти
+                </button>
+              </div>
+            </form>
+            <p style={{ textAlign: 'center', marginTop: '15px', fontSize: '12px' }}>
+              Нет аккаунта? <a href="#" onClick={openRegistrationModal} style={{ color: '#42CDEA' }}>Зарегистрироваться</a>
+            </p>
+            <button onClick={closeLoginModal} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#aaa', position: 'absolute', top: '10px', right: '10px' }}>✖</button>
           </div>
         )}
 
-        {/* Recommendations */}
-        <section id="recommendations" style={{ margin: '32px 0', padding: '20px', backgroundColor: '#F0F4F8', borderRadius: '8px' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center', marginBottom: '16px', color: '#1E3A8A' }}>
-            Рекомендуемые упражнения, питание и витамины
-            {exercises.length > 0 && (
-              <div style={{ 
-                marginTop: '10px',
-                padding: '15px',
-                backgroundColor: '#E3F2FD',
-                borderRadius: '8px',
-                fontSize: '1rem'
-              }}>
-                Хотите посмотреть этот курс у себя в профиле? 
-                <Link 
-                  href="/user-courses" 
-                  style={{ 
-                    marginLeft: '10px',
-                    color: 'white',
-                    backgroundColor: '#4CAF50',
-                    padding: '8px 16px',
-                    borderRadius: '20px',
-                    textDecoration: 'none',
-                    display: 'inline-block'
-                  }}
-                >
-                  Перейти в мои курсы
-                </Link>
-              </div>
-            )}
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
-            {/* Упражнения */}
-            <div style={{ padding: '10px', border: '1px solid #D1D5DB', borderRadius: '8px', backgroundColor: 'white' }}>
-                <h3 style={{ fontWeight: 'semibold', color: '#1E3A8A', textAlign: 'center' }}>Упражнения</h3>
-                <ul>
-                    {exercises.length > 0 ? (
-                        exercises.map((exercise, index) => (
-                            <li key={index} style={{ textAlign: 'center', marginBottom: '20px' }}>
-                                {exerciseGifs[exercise] && (
-                                    <img 
-                                        src={exerciseGifs[exercise]} 
-                                        alt={exercise} 
-                                        style={{ width: '150px', height: 'auto', display: 'block', margin: '0 auto 10px' }} 
-                                    />
-                                )}
-                                <span>{exercise}</span>
-                            </li>
-                        ))
-                    ) : (
-                        <li>Нет рекомендаций</li>
-                    )}
-                </ul>
-            </div>
-            {/* Рекомендуемое питание и витамины */}
-            <div style={{ padding: '10px', border: '1px solid #D1D5DB', borderRadius: '8px', backgroundColor: 'white' }}>
-                <h3 style={{ fontWeight: 'semibold', color: '#1E3A8A', textAlign: 'center' }}>Питание и витамины</h3>
-                <ul>
-                    {nutrition.length > 0 ? (
-                        nutrition.map((item, index) => (
-                            <li key={index}>
-                                {item.name} {item.description}
-                            </li>
-                        ))
-                    ) : (
-                        <li>Нет рекомендаций по питанию</li>
-                    )}
-                </ul>
-            </div>
-            {/* Продолжительность курса */}
-            <div style={{ padding: '10px', border: '1px solid #D1D5DB', borderRadius: '8px', backgroundColor: 'white' }}>
-                <h3 style={{ fontWeight: 'semibold', color: '#1E3A8A', textAlign: 'center' }}>Рекомендуемая продолжительность курса</h3>
-                <p style={{ fontSize: '2.5em', textAlign: 'center' }}>{duration}</p>
-            </div>
+        {/* Модальное окно для регистрации */}
+        {isRegistrationModalOpen && (
+          <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', borderRadius: '15px', boxShadow: '0 0 10px rgba(0,0,0,0.5)', width: '350px' }}>
+              <h2 style={{ textAlign: 'center', marginBottom: '20px', marginTop: '0px', fontSize: '2rem' }}>Регистрация</h2>
+              <form onSubmit={handleRegistration}>
+                  <div>
+                      <input type="text" name="firstName" placeholder="Имя" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
+                      <input type="text" name="lastName" placeholder="Фамилия" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
+                      <input 
+                        type="tel" 
+                        name="phone" 
+                        placeholder="Телефон" 
+                        pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"
+                        title="Пожалуйста, введите номер в формате +7 (9XX) XXX-XX-XX"
+                        onInput={(e) => {
+                          const input = e.target as HTMLInputElement;
+                          let value = input.value.replace(/\D/g, '');
+                          if (value.length > 11) {
+                            value = value.slice(0, 11);
+                          }
+                          if (value.length > 0) {
+                            value = '+7' + value.substring(1);
+                            if (value.length > 2) value = value.slice(0,2) + ' (' + value.slice(2);
+                            if (value.length > 7) value = value.slice(0,7) + ') ' + value.slice(7);
+                            if (value.length > 12) value = value.slice(0,12) + '-' + value.slice(12);
+                            if (value.length > 15) value = value.slice(0,15) + '-' + value.slice(15);
+                          }
+                          input.value = value;
+                        }}
+                        maxLength={18}
+                        required 
+                        style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
+                      />
+                      <input 
+                        type="email" 
+                        name="email" 
+                        placeholder="Почта" 
+                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                        title="Пожалуйста, введите корректный email адрес"
+                        required 
+                        style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
+                      />
+                      <select name="gender" required aria-label="Выбор пола" style={{ width: '98.7%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }}>
+                          <option value="">Выбрать пол</option>
+                          <option value="Мужской">Мужской</option>
+                          <option value="Женский">Женский</option>
+                      </select>
+                      <div style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>Дата рождения:</div>
+                      <input 
+                        type="date" 
+                        name="birthDate"
+                        aria-label="Дата рождения"
+                        required 
+                        style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
+                      />
+                      <input 
+                        type="password" 
+                        name="password" 
+                        placeholder="Пароль" 
+                        required 
+                        style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
+                      />
+                      <input 
+                        type="password" 
+                        name="confirmPassword" 
+                        placeholder="Повторите пароль" 
+                        required 
+                        style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
+                      />
+                      <button 
+                        type="submit"
+                        style={{ 
+                          width: '100%', 
+                          padding: '10px', 
+                          backgroundColor: '#42CDEA', 
+                          color: 'white', 
+                          border: 'none', 
+                          borderRadius: '10px', 
+                          fontSize: '23px', 
+                          marginBottom: '10px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Зарегистрироваться
+                      </button>
+                      <div style={{ textAlign: 'center', fontSize: '14px' }}>
+                          <span>Уже есть аккаунт? </span>
+                          <a href="#" onClick={() => { setIsRegistrationModalOpen(false); setIsLoginModalOpen(true); }} style={{ color: '#42CDEA', textDecoration: 'none' }}>Войти</a>
+                      </div>
+                  </div>
+              </form>
+              <button onClick={() => { setIsRegistrationModalOpen(false); setIsLoginModalOpen(true); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#aaa', position: 'absolute', top: '10px', right: '10px' }}>✖</button>
           </div>
-        </section>
-      </main>
-
-      {/* Footer */}
-      <footer style={{ backgroundColor: '#10415F', color: 'white', padding: '20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ flex: 1, textAlign: 'left', paddingLeft: '20px' }}>
-          <h2>ЛФК Центр</h2>
-          <p>+1 (7635) 547-12-97</p>
-          <p>support@LFK.Center</p>
-        </div>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <nav style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
-            <Link href="/vitamins" style={{ color: 'white', textDecoration: 'none' }}>Витамины</Link>
-            <Link href="/consulting" style={{ color: 'white', textDecoration: 'none' }}>Консультации</Link>
-            <Link href="/exercises" style={{ color: 'white', textDecoration: 'none' }}>Физические упражнения</Link>
-            <Link href="/nutrition" style={{ color: 'white', textDecoration: 'none' }}>Питание</Link>
-          </nav>
-        </div>
-        <div style={{ flex: 1, textAlign: 'center', paddingRight: '20px', marginTop: '-20px' }}>
-          <h3>Подписаться на рассылку</h3>
-          <input 
-            type="email" 
-            placeholder="Получать обновления по почте" 
-            style={{ 
-              padding: '12px',
-              borderRadius: '5px', 
-              border: 'none',
-              width: '300px',
-              marginRight: '10px'
-            }} 
-          />
-          <button style={{ backgroundColor: '#42CDEA', color: 'white', border: 'none', borderRadius: '5px', padding: '12px 20px' }}>→</button>
-        </div>
-      </footer>
-
-      {/* Модальное окно для входа */}
-      {isLoginModalOpen && (
-        <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', borderRadius: '15px', boxShadow: '0 0 10px rgba(0,0,0,0.5)', width: '350px' }}>
-          <h2 style={{ textAlign: 'center', marginBottom: '20px', marginTop: '0px', fontSize: '2rem' }}>Вход</h2>
-          <form onSubmit={handleLogin}>
-            <div>
-              <input 
-                type="text" 
-                name="email"
-                placeholder="Телефон | Почта" 
-                style={{ 
-                  width: '93%', 
-                  padding: '10px', 
-                  marginBottom: '15px', 
-                  borderWidth: '0 0 2px 0',
-                  borderColor: '#D1D5DB',
-                  borderStyle: 'solid',
-                  outline: 'none',
-                  fontSize: '14px'
-                }} 
-              />
-              <input 
-                type="password" 
-                name="password"
-                placeholder="Пароль" 
-                style={{ 
-                  width: '93%', 
-                  padding: '10px', 
-                  marginBottom: '15px', 
-                  borderWidth: '0 0 2px 0',
-                  borderColor: '#D1D5DB',
-                  borderStyle: 'solid',
-                  outline: 'none',
-                  fontSize: '14px'
-                }} 
-              />
-              <p style={{ textAlign: 'right', marginBottom: '15px', fontSize: '12px' }}>
-                <a href="#" style={{ color: '#42CDEA' }}>Забыли пароль?</a>
-              </p>
-              <button 
-                type="submit" 
-                style={{ 
-                  width: '100%', 
-                  padding: '10px', 
-                  backgroundColor: '#42CDEA', 
-                  color: 'white', 
-                  border: 'none', 
-                  borderRadius: '10px', 
-                  fontSize: '23px',
-                  cursor: 'pointer'
-                }}
-              >
-                Войти
-              </button>
-            </div>
-          </form>
-          <p style={{ textAlign: 'center', marginTop: '15px', fontSize: '12px' }}>
-            Нет аккаунта? <a href="#" onClick={openRegistrationModal} style={{ color: '#42CDEA' }}>Зарегистрироваться</a>
-          </p>
-          <button onClick={closeLoginModal} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#aaa', position: 'absolute', top: '10px', right: '10px' }}>✖</button>
-        </div>
-      )}
-
-      {/* Модальное окно для регистрации */}
-      {isRegistrationModalOpen && (
-        <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', borderRadius: '15px', boxShadow: '0 0 10px rgba(0,0,0,0.5)', width: '350px' }}>
-            <h2 style={{ textAlign: 'center', marginBottom: '20px', marginTop: '0px', fontSize: '2rem' }}>Регистрация</h2>
-            <form onSubmit={handleRegistration}>
-                <div>
-                    <input type="text" name="firstName" placeholder="Имя" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
-                    <input type="text" name="lastName" placeholder="Фамилия" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
-                    <input type="text" name="phone" placeholder="Телефон" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
-                    <input type="email" name="email" placeholder="Почта" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
-                    <select name="gender" required aria-label="Выбор пола" style={{ width: '98.7%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }}>
-                        <option value="">Выбрать пол</option>
-                        <option value="Мужской">Мужской</option>
-                        <option value="Женский">Женский</option>
-                    </select>
-                    <input type="date" name="birthDate" placeholder="Дата рождения" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
-                    <input type="password" name="password" placeholder="Пароль" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
-                    <input type="password" name="confirmPassword" placeholder="Повторите пароль" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
-                    <button 
-                      type="submit" 
-                      style={{ 
-                        width: '100%', 
-                        padding: '10px', 
-                        backgroundColor: '#42CDEA', 
-                        color: 'white', 
-                        border: 'none', 
-                        borderRadius: '10px', 
-                        fontSize: '23px', 
-                        marginBottom: '10px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Зарегистрироваться
-                    </button>
-                    <div style={{ textAlign: 'center', fontSize: '14px' }}>
-                        <span>Уже есть аккаунт? </span>
-                        <a href="#" onClick={() => { setIsRegistrationModalOpen(false); setIsLoginModalOpen(true); }} style={{ color: '#42CDEA', textDecoration: 'none' }}>Войти</a>
-                    </div>
-                </div>
-            </form>
-            <button onClick={() => { setIsRegistrationModalOpen(false); setIsLoginModalOpen(true); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#aaa', position: 'absolute', top: '10px', right: '10px' }}>✖</button>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }
