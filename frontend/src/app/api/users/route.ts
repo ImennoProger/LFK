@@ -1,6 +1,15 @@
 import { NextResponse } from 'next/server';
 import client from '../../../../../backend/db'; // Убедитесь, что путь к вашему клиенту правильный
 import jwt from 'jsonwebtoken';
+import { Pool } from 'pg';
+
+const pool = new Pool({
+    user: 'postgres',
+    host: 'localhost',
+    database: 'LFK',
+    password: 'root',
+    port: 5432,
+});
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
@@ -14,7 +23,7 @@ export async function POST(req: Request) {
         }
 
         try {
-            const result = await client.query(
+            const result = await pool.query(
                 'INSERT INTO users (first_name, last_name, phone, email, gender, birth_date, password) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
                 [firstName, lastName, phone, email, gender, birthDate, password]
             );
@@ -40,7 +49,7 @@ export async function POST(req: Request) {
         }
 
         try {
-            const result = await client.query(
+            const result = await pool.query(
                 'SELECT * FROM users WHERE email = $1 AND password = $2',
                 [email, password]
             );
