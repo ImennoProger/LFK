@@ -77,7 +77,7 @@ const AdminPanel: React.FC = () => {
                 calculateGenderData(filteredPatients);
                 calculateAgeData(filteredPatients);
             } else {
-                console.error('Ошибка при загрузке данных пациентов');
+                console.error('Ошибка при загрузке данных пользователей');
             }
         };
 
@@ -380,9 +380,9 @@ const AdminPanel: React.FC = () => {
                 <div>
                     <h3>Анализ результатов ЛФК</h3>
                     <ul>
-                        <li onClick={() => setActiveTab('patients')}>Анализ пациентов</li>
+                        <li onClick={() => setActiveTab('patients')}>Анализ пользователей</li>
                         <li onClick={() => setActiveTab('statistics')}>Статистика ЛФК курсов</li>
-                        <li onClick={() => setActiveTab('completed')}>Анализ курсов пациентов</li>
+                        <li onClick={() => setActiveTab('completed')}>Анализ курсов пользователей</li>
                     </ul>
                 </div>
             </nav>
@@ -394,11 +394,11 @@ const AdminPanel: React.FC = () => {
 
                 {activeTab === 'patients' && (
                     <>
-                        <h2>Анализ пациентов</h2>
+                        <h2>Анализ пользователей</h2>
                         <div className="filter">
-                            <label htmlFor="date-from">С:</label>
+                            <label htmlFor="date-from">Дата рождения с:</label>
                             <input type="date" id="date-from" name="dateFrom" value={filter.dateFrom} onChange={handleFilterChange} />
-                            <label htmlFor="date-to">До:</label>
+                            <label htmlFor="date-to">до:</label>
                             <input type="date" id="date-to" name="dateTo" value={filter.dateTo} onChange={handleFilterChange} />
                             <label htmlFor="gender">Пол:</label>
                             <select id="gender" name="gender" value={filter.gender} onChange={handleFilterChange}>
@@ -460,7 +460,7 @@ const AdminPanel: React.FC = () => {
                                 </div>
                             </div>
                             <div className="chart-container">
-                                <h3>Соотношение возрастов пациентов</h3>
+                                <h3>Соотношение возрастов пользователей</h3>
                                 <div className="chart">
                                     <Pie data={ageData} />
                                 </div>
@@ -635,7 +635,7 @@ const AdminPanel: React.FC = () => {
                 )}
                 {activeTab === 'completed' && (
                     <>
-                        <h2>Анализ курсов пациентов</h2>
+                        <h2>Анализ курсов пользователей</h2>
                         <div className="filter">
                             <label htmlFor="startDateFrom">Дата начала курса</label>
                             <label htmlFor="startDateFrom">от</label>
@@ -785,7 +785,7 @@ const AdminPanel: React.FC = () => {
                                 </div>
                             </div>
                             <div className="chart-container" style={{ width: '50%', height: '400px', margin: '0 auto' }}>
-                                <h3>Распределение групп пациентов по степени уменьшения боли</h3>
+                                <h3>Распределение групп пользователей по степени уменьшения боли</h3>
                                 <div className="chart" style={{ height: '100%' }}>
                                     <Bar 
                                         data={ageData}
@@ -807,7 +807,7 @@ const AdminPanel: React.FC = () => {
                                                 tooltip: {
                                                     callbacks: {
                                                         label: function(context) {
-                                                            return `Количество пациентов: ${context.raw}`;
+                                                            return `Количество пользователей: ${context.raw}`;
                                                         }
                                                     }
                                                 }

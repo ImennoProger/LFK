@@ -22,7 +22,13 @@ export async function POST(req: Request) {
         } catch (err: unknown) {
             if (err instanceof Error) {
                 console.error('Ошибка при регистрации пользователя', err.stack);
-                return NextResponse.json({ error: err.message }, { status: 500 });
+                // Проверяем конкретные ошибки PostgreSQL
+                if (err.message.includes('users_email_key')) {
+                    return NextResponse.json({ error: 'email_exists' }, { status: 400 });
+                } else if (err.message.includes('users_phone_key')) {
+                    return NextResponse.json({ error: 'phone_exists' }, { status: 400 });
+                }
+                return NextResponse.json({ error: err.message }, { status: 400 });
             }
             console.error('Неизвестная ошибка', err);
             return NextResponse.json({ error: 'Ошибка сервера' }, { status: 500 });

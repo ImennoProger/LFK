@@ -32,15 +32,31 @@
       "static/chunks/main-app.js",
       "static/chunks/app/api/users/route.js"
     ],
+    "/admin/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/admin/page.css",
+      "static/chunks/app/admin/page.js"
+    ],
     "/api/verify-token/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/api/verify-token/route.js"
     ],
-    "/api/user-courses/route": [
+    "/api/patients/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/api/user-courses/route.js"
+      "static/chunks/app/api/patients/route.js"
+    ],
+    "/api/statistics/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/statistics/route.js"
+    ],
+    "/api/user-recommendations/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/user-recommendations/route.js"
     ]
   }
 }

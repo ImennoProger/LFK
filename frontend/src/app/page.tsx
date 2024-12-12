@@ -37,14 +37,17 @@ export default function Page() {
   const [hoveredText, setHoveredText] = useState<string | null>(null);
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [selectedBodyPart, setSelectedBodyPart] = useState<string | null>(null);
   const [recommendations, setRecommendations] = useState<{ exercises: string[]; nutrition: string[]; duration: string } | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [user, setUser] = useState<User | null>(null); // Указываем тип для user
   const [exercises, setExercises] = useState<string[]>([]); // Состояние для хранения упражнений
   const [nutrition, setNutrition] = useState<{ name: string; description: string }[]>([]); // Состояние для хранения питания
   const [duration, setDuration] = useState<string>("1 месяц"); // Состояние для хранения продолжительности курса
+  const [registrationError, setRegistrationError] = useState<string | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -281,6 +284,7 @@ export default function Page() {
 
   const handleRegistration = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setRegistrationError(null);
     const form = event.currentTarget;
 
     const formData = {
@@ -293,21 +297,34 @@ export default function Page() {
         password: form.password.value,
     };
 
-    const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ action: 'register', ...formData }),
-    });
+    try {
+        const response = await fetch('/api/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ action: 'register', ...formData }),
+        });
 
-    if (response.ok) {
-        const user = await response.json();
-        console.log('Пользователь зарегистрирован:', user);
-        setIsRegistrationModalOpen(false);
-    } else {
-        const error = await response.json();
-        console.error('Ошибка регистрации:', error);
+        const data = await response.json();
+        console.log('Ответ сервера:', data); // Для отладки
+
+        if (response.ok) {
+            setRegistrationSuccess(true);
+            setIsRegistrationModalOpen(false);
+        } else {
+            // Обрабатываем новые коды ошибок
+            if (data.error === 'email_exists') {
+                setRegistrationError('Пользователь с такой почтой уже существует');
+            } else if (data.error === 'phone_exists') {
+                setRegistrationError('Пользователь с таким номером телефона уже существует');
+            } else {
+                setRegistrationError('Ошибка при регистрации');
+            }
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        setRegistrationError('Произошла ошибка при регистрации');
     }
   };
 
@@ -450,9 +467,19 @@ export default function Page() {
           {/* Search Section */}
           <section style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '32px', textAlign: 'center', backgroundImage: "url('/backgroundmain.png')", backgroundSize: 'cover', minHeight: '70vh', padding: '32px' }}>
             <div>
-              <h1 style={{ fontWeight: 700, fontSize: '3.75rem', color: 'white', textRendering: 'optimizeLegibility', textShadow: '0 0 2px rgba(0, 0, 0, 0.5)', marginBottom: '0' }}>
-                Начните с выбора проблемы, и мы покажем
-                <span style={{ display: 'block', textAlign: 'center', color: 'white' }}>путь к здоровью.</span>
+              <h1 style={{ 
+                fontWeight: 700, 
+                fontSize: '3.75rem', 
+                color: 'white', 
+                textRendering: 'optimizeLegibility', 
+                textShadow: '0 0 2px rgba(0, 0, 0, 0.5)', 
+                marginBottom: '0',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                display: 'inline-block'
+              }}>
+                Начните с выбора проблемы, и мы покажем путь к здоровью.
               </h1>
             </div>
             
@@ -550,8 +577,24 @@ export default function Page() {
                   </label>
                 </div>
               ))}
+              {showError && selectedSymptoms.length === 0 && (
+                <div style={{ 
+                  color: '#dc2626',
+                  fontSize: '0.875rem',
+                  marginTop: '8px',
+                  textAlign: 'center'
+                }}>
+                  Пожалуйста, выберите хотя бы один симптом
+                </div>
+              )}
               <button 
-                onClick={handleConfirm} 
+                onClick={() => {
+                  if (selectedSymptoms.length === 0) {
+                    setShowError(true);
+                  } else {
+                    handleConfirm();
+                  }
+                }}
                 style={{ 
                   marginTop: '10px', 
                   backgroundColor: '#42CDEA', 
@@ -742,95 +785,164 @@ export default function Page() {
         {/* Модальное окно для регистрации */}
         {isRegistrationModalOpen && (
           <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', borderRadius: '15px', boxShadow: '0 0 10px rgba(0,0,0,0.5)', width: '350px' }}>
-              <h2 style={{ textAlign: 'center', marginBottom: '20px', marginTop: '0px', fontSize: '2rem' }}>Регистрация</h2>
-              <form onSubmit={handleRegistration}>
-                  <div>
-                      <input type="text" name="firstName" placeholder="Имя" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
-                      <input type="text" name="lastName" placeholder="Фамилия" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
-                      <input 
-                        type="tel" 
-                        name="phone" 
-                        placeholder="Телефон" 
-                        pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"
-                        title="Пожалуйста, введите номер в формате +7 (9XX) XXX-XX-XX"
-                        onInput={(e) => {
-                          const input = e.target as HTMLInputElement;
-                          let value = input.value.replace(/\D/g, '');
-                          if (value.length > 11) {
-                            value = value.slice(0, 11);
-                          }
-                          if (value.length > 0) {
-                            value = '+7' + value.substring(1);
-                            if (value.length > 2) value = value.slice(0,2) + ' (' + value.slice(2);
-                            if (value.length > 7) value = value.slice(0,7) + ') ' + value.slice(7);
-                            if (value.length > 12) value = value.slice(0,12) + '-' + value.slice(12);
-                            if (value.length > 15) value = value.slice(0,15) + '-' + value.slice(15);
-                          }
-                          input.value = value;
-                        }}
-                        maxLength={18}
-                        required 
-                        style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
-                      />
-                      <input 
-                        type="email" 
-                        name="email" 
-                        placeholder="Почта" 
-                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-                        title="Пожалуйста, введите корректный email адрес"
-                        required 
-                        style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
-                      />
-                      <select name="gender" required aria-label="Выбор пола" style={{ width: '98.7%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }}>
-                          <option value="">Выбрать пол</option>
-                          <option value="Мужской">Мужской</option>
-                          <option value="Женский">Женский</option>
-                      </select>
-                      <div style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>Дата рождения:</div>
-                      <input 
-                        type="date" 
-                        name="birthDate"
-                        aria-label="Дата рождения"
-                        required 
-                        style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
-                      />
-                      <input 
-                        type="password" 
-                        name="password" 
-                        placeholder="Пароль" 
-                        required 
-                        style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
-                      />
-                      <input 
-                        type="password" 
-                        name="confirmPassword" 
-                        placeholder="Повторите пароль" 
-                        required 
-                        style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
-                      />
-                      <button 
-                        type="submit"
-                        style={{ 
-                          width: '100%', 
-                          padding: '10px', 
-                          backgroundColor: '#42CDEA', 
-                          color: 'white', 
-                          border: 'none', 
-                          borderRadius: '10px', 
-                          fontSize: '23px', 
-                          marginBottom: '10px',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Зарегистрироваться
-                      </button>
-                      <div style={{ textAlign: 'center', fontSize: '14px' }}>
-                          <span>Уже есть аккаунт? </span>
-                          <a href="#" onClick={() => { setIsRegistrationModalOpen(false); setIsLoginModalOpen(true); }} style={{ color: '#42CDEA', textDecoration: 'none' }}>Войти</a>
-                      </div>
+            <h2 style={{ textAlign: 'center', marginBottom: '20px', marginTop: '0px', fontSize: '2rem' }}>Регистрация</h2>
+            <form onSubmit={handleRegistration}>
+              <div>
+                <input type="text" name="firstName" placeholder="Имя" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
+                <input type="text" name="lastName" placeholder="Фамилия" required style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} />
+                <input 
+                  type="tel" 
+                  name="phone" 
+                  placeholder="Телефон" 
+                  pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"
+                  title="Пожалуйста, введите номер в формате +7 (9XX) XXX-XX-XX"
+                  onInput={(e) => {
+                    const input = e.target as HTMLInputElement;
+                    let value = input.value.replace(/\D/g, '');
+                    if (value.length > 11) {
+                      value = value.slice(0, 11);
+                    }
+                    if (value.length > 0) {
+                      value = '+7' + value.substring(1);
+                      if (value.length > 2) value = value.slice(0,2) + ' (' + value.slice(2);
+                      if (value.length > 7) value = value.slice(0,7) + ') ' + value.slice(7);
+                      if (value.length > 12) value = value.slice(0,12) + '-' + value.slice(12);
+                      if (value.length > 15) value = value.slice(0,15) + '-' + value.slice(15);
+                    }
+                    input.value = value;
+                  }}
+                  maxLength={18}
+                  required 
+                  style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
+                />
+                <input 
+                  type="email" 
+                  name="email" 
+                  placeholder="Почта" 
+                  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                  title="Пожалуйста, введите корректный email адрес"
+                  required 
+                  style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
+                />
+                <select name="gender" required aria-label="Выбор пола" style={{ width: '98.7%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }}>
+                    <option value="">Выбрать пол</option>
+                    <option value="Мужской">Мужской</option>
+                    <option value="Женский">Женский</option>
+                </select>
+                <div style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>Дата рождения:</div>
+                <input 
+                  type="date" 
+                  name="birthDate"
+                  aria-label="Дата рождения"
+                  required 
+                  style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
+                />
+                <input 
+                  type="password" 
+                  name="password" 
+                  placeholder="Пароль" 
+                  required 
+                  style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
+                />
+                <input 
+                  type="password" 
+                  name="confirmPassword" 
+                  placeholder="Повторите пароль" 
+                  required 
+                  style={{ width: '93%', padding: '10px', marginBottom: '15px', borderWidth: '0 0 2px 0', borderColor: '#D1D5DB', borderStyle: 'solid', outline: 'none', fontSize: '14px' }} 
+                />
+                {/* Добавляем отображение ошибки перед кнопкой регистрации */}
+                {registrationError && (
+                  <div style={{ 
+                    padding: '10px',
+                    marginBottom: '15px',
+                    backgroundColor: '#fee2e2',
+                    color: '#dc2626',
+                    borderRadius: '5px',
+                    textAlign: 'center',
+                    fontSize: '14px'
+                  }}>
+                    {registrationError}
                   </div>
-              </form>
-              <button onClick={() => { setIsRegistrationModalOpen(false); setIsLoginModalOpen(true); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#aaa', position: 'absolute', top: '10px', right: '10px' }}>✖</button>
+                )}
+                <button 
+                  type="submit"
+                  style={{ 
+                    width: '100%', 
+                    padding: '10px', 
+                    backgroundColor: '#42CDEA', 
+                    color: 'white', 
+                    border: 'none', 
+                    borderRadius: '10px', 
+                    fontSize: '23px', 
+                    marginBottom: '10px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Зарегистрироваться
+                </button>
+                <div style={{ textAlign: 'center', fontSize: '14px' }}>
+                    <span>Уже есть аккаунт? </span>
+                    <a href="#" onClick={() => { setIsRegistrationModalOpen(false); setIsLoginModalOpen(true); }} style={{ color: '#42CDEA', textDecoration: 'none' }}>Войти</a>
+                </div>
+              </div>
+            </form>
+            <button onClick={() => { setIsRegistrationModalOpen(false); setIsLoginModalOpen(true); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#aaa', position: 'absolute', top: '10px', right: '10px' }}>✖</button>
+          </div>
+        )}
+
+        {/* Модальное окно для сообщения об успешной регистрации */}
+        {registrationSuccess && (
+          <div style={{ 
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '15px',
+            boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+            width: '300px',
+            textAlign: 'center'
+          }}>
+            <button 
+              onClick={() => {
+                setRegistrationSuccess(false);
+                setIsRegistrationModalOpen(false);
+                setIsLoginModalOpen(true);
+              }} 
+              style={{ 
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                background: 'none',
+                border: 'none',
+                fontSize: '1.2rem',
+                color: '#aaa',
+                cursor: 'pointer'
+              }}
+            >
+              ✖
+            </button>
+            <h3 style={{ marginTop: '10px', color: '#4CAF50' }}>Регистрация успешно завершена!</h3>
+            <button 
+              onClick={() => {
+                setRegistrationSuccess(false);
+                setIsRegistrationModalOpen(false);
+                setIsLoginModalOpen(true);
+              }} 
+              style={{ 
+                marginTop: '20px',
+                padding: '10px 30px',
+                backgroundColor: '#42CDEA',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px',
+                cursor: 'pointer'
+              }}
+            >
+              OK
+            </button>
           </div>
         )}
       </div>

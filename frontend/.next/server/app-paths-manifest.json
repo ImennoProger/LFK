@@ -1,9 +1,11 @@
 {
-  "/api/recommendations/route": "app/api/recommendations/route.js",
   "/api/points/route": "app/api/points/route.js",
   "/api/users/route": "app/api/users/route.js",
   "/api/verify-token/route": "app/api/verify-token/route.js",
-  "/api/user-courses/route": "app/api/user-courses/route.js",
+  "/api/patients/route": "app/api/patients/route.js",
+  "/api/statistics/route": "app/api/statistics/route.js",
+  "/api/user-recommendations/route": "app/api/user-recommendations/route.js",
   "/page": "app/page.js",
-  "/user-courses/page": "app/user-courses/page.js"
+  "/user-courses/page": "app/user-courses/page.js",
+  "/admin/page": "app/admin/page.js"
 }
